@@ -1,12 +1,77 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-pv
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /d/nagp/mysqldata
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+data:
+  db-url: jdbc:mysql://database:3306/nagp
+  db-database: nagp
+  db-user: k8sapp
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-scripts-configmap
+data:
+  init.sql: |
+    CREATE TABLE your_table (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      column1 VARCHAR(255),
+      column2 VARCHAR(255),
+      column3 VARCHAR(255)
+    );
+
+    INSERT INTO your_table (column1, column2, column3) VALUES ('Ravi', 'Maths', '97');
+    INSERT INTO your_table (column1, column2, column3) VALUES ('Teaja', 'Maths', '98');
+    -- Add more SQL statements as needed
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database-secret
+type: Opaque
+data:
+  db-root-password: cm9vdA==
+  db-password: azhzYXBw
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: microservice
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   template:
     metadata:
       labels:
