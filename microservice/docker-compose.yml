@@ -1,0 +1,24 @@
+version: '3'
+services:
+  k8sapp:
+    image: k8sapp:latest
+    environment:
+      - SPRING_DATASOURCE_USERNAME=k8sapp
+      - SPRING_DATASOURCE_PASSWORD=k8sapp
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/nagp
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+
+  database:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=nagp
+      - MYSQL_USER=k8sapp
+      - MYSQL_PASSWORD=k8sapp
+    volumes:
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
