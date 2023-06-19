@@ -63,7 +63,7 @@
 # Access the microservice API
 ### Note down the port number listed under the "PORT(S)" column. This is the NodePort that maps to the microservice
         kubectl get services microservice --namespace nagp
-###Access the microservice using the Minikube node's IP and the NodePort. In a separate terminal window, run:
+### Access the microservice using the Minikube node's IP and the NodePort. In a separate terminal window, run:
         minikube ip
 ### Note down the IP address displayed. Then, in your web browser or using tools like cURL or Postman, access the microservice using the following URL format:
         http://<minikube-ip>:<node-port>
