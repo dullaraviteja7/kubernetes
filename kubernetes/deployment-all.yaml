@@ -63,7 +63,7 @@ kind: Deployment
 metadata:
   name: microservice
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: microservice
